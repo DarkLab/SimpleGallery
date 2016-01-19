@@ -1,10 +1,16 @@
 package com.darklab.simplegallery;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -43,6 +49,7 @@ public class GalleryActivity extends AppCompatActivity {
             hide();
         }
     };
+    private ViewFlipper flipper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +70,12 @@ public class GalleryActivity extends AppCompatActivity {
         Animation fade_in = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
-        ViewFlipper flipper = (ViewFlipper) findViewById(R.id.flipper);
+        flipper = (ViewFlipper) findViewById(R.id.flipper);
 
         flipper.setInAnimation(fade_in);
         flipper.setOutAnimation(fade_out);
 
-        flipper.setFlipInterval(5000);
+        setPeriodForFlipper();
         flipper.setAutoStart(true);
         flipper.startFlipping();
     }
@@ -112,5 +119,44 @@ public class GalleryActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        setPeriodForFlipper();
+    }
+
+    private void setPeriodForFlipper() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int period = Integer.parseInt(prefs.getString("pref_period", "5"));
+        if (period < 1) {
+            period = 1;
+        } else if (period > 60) {
+            period = 60;
+        }
+        period *= 1000;
+
+        flipper.setFlipInterval(period);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivityForResult(intent, 0);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
