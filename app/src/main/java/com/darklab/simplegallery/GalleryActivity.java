@@ -3,19 +3,22 @@ package com.darklab.simplegallery;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceFragment;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ViewFlipper;
+
+import java.net.URI;
 
 public class GalleryActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
@@ -51,6 +54,14 @@ public class GalleryActivity extends AppCompatActivity {
     };
     private ViewFlipper flipper;
 
+    private int[] picturesId = new int[]{
+            R.drawable.elephant,
+            R.drawable.home,
+            R.drawable.ice_cream,
+            R.drawable.lion,
+            R.drawable.monkey
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,11 +80,15 @@ public class GalleryActivity extends AppCompatActivity {
 
         Animation fade_in = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        Animation slide_in = AnimationUtils.loadAnimation(this, R.anim.slide_in);
+        Animation slide_out = AnimationUtils.loadAnimation(this, R.anim.slide_out);
 
         flipper = (ViewFlipper) findViewById(R.id.flipper);
 
-        flipper.setInAnimation(fade_in);
-        flipper.setOutAnimation(fade_out);
+        flipper.setInAnimation(slide_in);
+        flipper.setOutAnimation(slide_out);
+
+        loadPictures();
 
         setPeriodForFlipper();
         flipper.setAutoStart(true);
@@ -85,6 +100,36 @@ public class GalleryActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
 
         delayedHide(100);
+    }
+
+    private void loadPictures() {
+        for (int resId : picturesId) {
+            addPictureByResId(resId);
+        }
+    }
+
+    private void addPictureByResId(int resId) {
+        ImageView picture = new ImageView(this);
+        ViewGroup.LayoutParams params =
+                new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+        picture.setLayoutParams(params);
+        picture.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        picture.setImageResource(resId);
+        flipper.addView(picture);
+    }
+
+    private void addPictureByUri(Uri uri) {
+        ImageView picture = new ImageView(this);
+        ViewGroup.LayoutParams params =
+                new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+        picture.setLayoutParams(params);
+        picture.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        picture.setImageURI(uri);
+        flipper.addView(picture);
     }
 
     private void toggle() {
@@ -130,7 +175,7 @@ public class GalleryActivity extends AppCompatActivity {
 
     private void setPeriodForFlipper() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int period = Integer.parseInt(prefs.getString("pref_period", "5"));
+        int period = Integer.parseInt(prefs.getString(getResources().getString(R.string.key_pref_period), "5"));
         if (period < 1) {
             period = 1;
         } else if (period > 60) {

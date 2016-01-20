@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference
-        android:key="pref_period"
-        android:title="period"
-        android:summary="Period for image changes\nAvailable value from 1 to 60"
+        android:key="@string/key_pref_period"
+        android:title="@string/title_period"
+        android:summary="@string/summary_period"
         android:numeric="integer"
         android:defaultValue="5"/>
     <EditTextPreference
-        android:key="pref_path"
-        android:title="path"
-        android:summary="path for load images"
+        android:key="@string/key_pref_path"
+        android:title="@string/title_path"
+        android:summary="@string/summary_path"
         android:defaultValue="" />
 </PreferenceScreen>

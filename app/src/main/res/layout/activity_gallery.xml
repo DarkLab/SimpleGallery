@@ -19,31 +19,6 @@
                  android:layout_width="match_parent"
                  android:layout_height="match_parent">
 
-        <ImageView android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:scaleType="fitCenter"
-                   android:src="@drawable/elephant"/>
-
-        <ImageView android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:scaleType="fitCenter"
-                   android:src="@drawable/home"/>
-
-        <ImageView android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:scaleType="fitCenter"
-                   android:src="@drawable/ice_cream"/>
-
-        <ImageView android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:scaleType="fitCenter"
-                   android:src="@drawable/lion"/>
-
-        <ImageView android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:scaleType="fitCenter"
-                   android:src="@drawable/monkey"/>
-
     </ViewFlipper>
 
 </FrameLayout>
